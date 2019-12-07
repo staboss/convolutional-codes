@@ -1,4 +1,4 @@
-# Implementation of the data transmission model through BSC channel
+# Implementation of the data transmission BSC model 
 ### How to build:
 `mvn package`
 ### How to run:
