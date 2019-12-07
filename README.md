@@ -13,7 +13,7 @@
 `java -jar ConvolutionalCoding-1.0.jar -u -g 1+x+x^4 1+x^2+x^3+x^4`
 
 ### Binary symmetric channel (BSC) model
-![Model BSC](https://github.com/staboss/convolutional-codes/tree/master/examples/Model.png)
+[Click](https://github.com/staboss/convolutional-codes/tree/master/examples/Model.png) for detail view.
 
 ### Bit error rate (BER) test
 ![BER test](https://github.com/staboss/convolutional-codes/blob/master/src/main/resources/PlotBER_4.png)
