@@ -12,7 +12,7 @@
 ### For example:
 `java -jar ConvolutionalCoding-1.0.jar -u -g 1+x+x^4 1+x^2+x^3+x^4`
 
-### Binary symmetric channel (BSC) model :
+### Binary symmetric channel (BSC) model
 ![Model BSC](https://github.com/staboss/convolutional-codes/tree/master/examples/Model.png)
 
 ### Bit error rate (BER) test
