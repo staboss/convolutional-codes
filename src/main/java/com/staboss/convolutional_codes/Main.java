@@ -22,8 +22,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-        //  java -jar ConvolutionalCoding-1.0.jar {-u|-s} {-r|-g} 1+x+x^4 1+x^2+x^3+x^4
-
         if (args[0].equals("-h")) {
             usage(false);
             return;
