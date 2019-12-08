@@ -13,12 +13,12 @@
 `java -jar ConvolutionalCoding-1.0.jar -u -g 1+x+x^4 1+x^2+x^3+x^4`
 
 ### Binary symmetric channel (BSC) model
-[Click](https://github.com/staboss/convolutional-codes/tree/master/examples/Model.png) for detail view.
-
-### Bit error rate (BER) test
-![BER test](https://github.com/staboss/convolutional-codes/blob/master/src/main/resources/PlotBER_4.png)
+[Click](https://github.com/staboss/convolutional-codes/tree/master/examples/Model.pdf) for detail view.
 
 ### Frame error rate (FER) test
-![BER test](https://github.com/staboss/convolutional-codes/blob/master/src/main/resources/PlotFER_4.png)
+![BER test](https://github.com/staboss/convolutional-codes/blob/master/examples/ERROR_RATE/ERROR_RATE_X_4/FER_4.png)
+
+### Bir error rate (BER) test
+![BER test](https://github.com/staboss/convolutional-codes/blob/master/examples/ERROR_RATE/ERROR_RATE_X_4/BER_4.png)
 
 See [wiki](https://en.wikipedia.org/wiki/Viterbi_decoder) for more information.
