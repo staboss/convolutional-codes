@@ -9,7 +9,6 @@ import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.XYChart;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -39,15 +38,15 @@ public class DependencyGraph {
     private static volatile double[] valBER;
 
     static {
-        String g1 = "1101101";    //  1+x+x^3+x^4+x^6
-        String g2 = "1001111";    //  1+x^3+x^4+x^5+x^6
+        //String g1 = "1101101";    //  1+x+x^3+x^4+x^6
+        //String g2 = "1001111";    //  1+x^3+x^4+x^5+x^6
 
-        firstState = "000000";
+        //firstState = "000000";
 
-        //String g1 = "11001";    //  1+x+x^4
-        //String g2 = "10111";    //  1+x^2+x^3+x^4
+        String g1 = "11001";    //  1+x+x^4
+        String g2 = "10111";    //  1+x^2+x^3+x^4
 
-        //firstState = "0000";
+        firstState = "0000";
 
         int size = 20;
         genPRO = new double[size];
@@ -55,8 +54,8 @@ public class DependencyGraph {
         valFER = new double[size];
         valBER = new double[size];
 
-        K = 16;
-        I = 100;
+        K = 256;
+        I = 100000;
         L = (2 * (K + firstState.length())) * I;
 
         STEP = 0.005;
@@ -77,8 +76,8 @@ public class DependencyGraph {
             probability += STEP;
         }
 
-        Arrays.stream(genPRO).forEach(g -> out.print(g + " "));
-        out.println();
+        //Arrays.stream(genPRO).forEach(g -> out.print(g + " "));
+        //out.println();
 
         //  Создаем новый пул потоков, где одновременно может выполняться 4 потока
         ExecutorService executorService = Executors.newFixedThreadPool(4);
@@ -93,7 +92,7 @@ public class DependencyGraph {
         executorService.shutdown();
 
         //  Выделяем время на выполнение потоков
-        executorService.awaitTermination(120, TimeUnit.MINUTES);
+        executorService.awaitTermination(150, TimeUnit.MINUTES);
         long finish = System.currentTimeMillis();
 
         out.printf("\nTotal time: %d min\n", (int) ((double) (finish - start) / 60000.0));
@@ -105,15 +104,15 @@ public class DependencyGraph {
         String plotFER, plotBER, valuesFER, valuesBER;
 
         if (firstState.length() == 6) {
-            plotFER = "PlotFER_6";
-            plotBER = "PlotBER_6";
-            valuesFER = "ValuesFER_6.csv";
-            valuesBER = "ValuesBER_6.csv";
+            plotFER = "FER_6";
+            plotBER = "BER_6";
+            valuesFER = "FER_6.csv";
+            valuesBER = "BER_6.csv";
         } else if (firstState.length() == 4) {
-            plotFER = "PlotFER_6";
-            plotBER = "PlotBER_6";
-            valuesFER = "ValuesFER_6.csv";
-            valuesBER = "ValuesBER_6.csv";
+            plotFER = "FER_4";
+            plotBER = "BER_4";
+            valuesFER = "FER_4.csv";
+            valuesBER = "BER_4.csv";
         } else {
             plotFER = "PlotFER";
             plotBER = "PlotBER";
@@ -181,7 +180,7 @@ public class DependencyGraph {
                     }
                 }
 
-                valPRO[positions[i]] = genPRO[positions[i]] * 100;
+                valPRO[positions[i]] = genPRO[positions[i]];
                 valFER[positions[i]] = (double) fErrors / (double) I;
                 valBER[positions[i]] = (double) bErrors / (double) L;
                 out.printf("WORKER-%d : %2d completed\n", workerId, positions[i]);

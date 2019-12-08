@@ -75,7 +75,7 @@ public class Main {
                 int[] iVector;
                 int[] iCoded;
 
-                String coded;
+                String encoded;
                 String decoded;
 
                 int errors = 0;
@@ -86,10 +86,10 @@ public class Main {
                     iVector = getVector(K);
 
                     //  закодировали
-                    coded = coder.encode(makeStringVector(iVector));
+                    encoded = coder.encode(makeStringVector(iVector));
 
                     //  получили массив int
-                    iCoded = makeIntVector(coded);
+                    iCoded = makeIntVector(encoded);
 
                     //  инвертировали каждый бит с вероятностью P
                     invert(iCoded, P);
@@ -97,7 +97,7 @@ public class Main {
                     decoder = new Decoder(coder.getStates(), firstState, getVectorValues(makeStringVector(iCoded)));
                     decoded = decoder.getDecodedSequenceString();
 
-                    if (!coded.equals(decoded)) errors++;
+                    if (!encoded.equals(decoded)) errors++;
                 }
                 long finishTime = System.currentTimeMillis();
 
