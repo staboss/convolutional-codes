@@ -123,8 +123,8 @@ public class DependencyGraph {
         BitmapEncoder.saveBitmap(fer, plotFER, BitmapEncoder.BitmapFormat.PNG);
         BitmapEncoder.saveBitmap(ber, plotBER, BitmapEncoder.BitmapFormat.PNG);
 
-        CsvWriter.writeCsvFile(valuesFER, "FER", valPRO, valFER);
-        CsvWriter.writeCsvFile(valuesBER, "BER", valPRO, valBER);
+        CsvWriter.writeCsvFile(valuesFER, valPRO, valFER);
+        CsvWriter.writeCsvFile(valuesBER, valPRO, valBER);
     }
 
     private static class Worker extends Thread {
