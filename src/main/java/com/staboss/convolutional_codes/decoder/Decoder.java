@@ -36,7 +36,28 @@ public class Decoder {
         this.vector = vector;
 
         int len = firstState.length();
-        format = (len == 2) ? "%2s" : (len == 3) ? "%3s" : (len == 4) ? "%4s" : (len == 5) ? "%5s" : (len == 6) ? "%6s" : null;
+
+        switch (len) {
+            case 2:
+                format = "%2s";
+                break;
+            case 3:
+                format = "%3s";
+                break;
+            case 4:
+                format = "%4s";
+                break;
+            case 5:
+                format = "%5s";
+                break;
+            case 6:
+                format = "%6s";
+                break;
+            default:
+                format = null;
+                break;
+        }
+
         if (format == null) throw new Exception("Invalid Initial State Format");
 
         //  создание решетки

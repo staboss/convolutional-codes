@@ -79,19 +79,19 @@ public class DependencyGraph {
         //Arrays.stream(genPRO).forEach(g -> out.print(g + " "));
         //out.println();
 
-        //  Создаем новый пул потоков, где одновременно может выполняться 4 потока
+        //  создаем новый пул потоков, где одновременно может выполняться 4 потока
         ExecutorService executorService = Executors.newFixedThreadPool(4);
 
-        //  Добавляем в пул потоков 4 новых потока
+        //  добавляем в пул потоков 4 новых потока
         for (int i = 0; i <= 15; i += 5) {
             executorService.submit(new Worker(states, firstState, i, i + 1, i + 2, i + 3, i + 4));
         }
 
-        //  Запускаем пул потоков
+        //  запускаем пул потоков
         long start = System.currentTimeMillis();
         executorService.shutdown();
 
-        //  Выделяем время на выполнение потоков
+        //  выделяем время на выполнение потоков
         executorService.awaitTermination(150, TimeUnit.MINUTES);
         long finish = System.currentTimeMillis();
 
