@@ -132,4 +132,17 @@ public abstract class Coder {
 
         return sb.toString();
     }
+
+    /**
+     * Возвращает указанный кодер
+     *
+     * @param type тип кодера
+     * @param g1   полином 1
+     * @param g2   полином 2
+     * @return нужный кодер
+     * @throws Exception если ошибка входных данных
+     */
+    public static Coder getCoder(String type, String g1, String g2) throws Exception {
+        return type.equals("-s") ? new SystematicCoder(g1, g2) : new NonSystematicCoder(g1, g2);
+    }
 }

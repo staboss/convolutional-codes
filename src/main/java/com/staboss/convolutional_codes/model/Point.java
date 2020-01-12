@@ -28,11 +28,8 @@ public class Point {
     public Point(String value, int errors, int level,
                  String branch0, String branch1,
                  String branchValue0, String branchValue1) {
-        this.value = value;
+        this(value, level, branch0, branch1);
         this.errors = errors;
-        this.level = level;
-        this.branch0 = branch0;
-        this.branch1 = branch1;
         this.branchValue0 = branchValue0;
         this.branchValue1 = branchValue1;
     }
@@ -41,13 +38,7 @@ public class Point {
                  String branch0, String branch1,
                  String branchValue0, String branchValue1,
                  Point pathFromPoint) {
-        this.value = value;
-        this.errors = errors;
-        this.level = level;
-        this.branch0 = branch0;
-        this.branch1 = branch1;
-        this.branchValue0 = branchValue0;
-        this.branchValue1 = branchValue1;
+        this(value, errors, level, branch0, branch1, branchValue0, branchValue1);
         this.pathFromPoint = pathFromPoint;
     }
 

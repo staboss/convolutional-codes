@@ -1,13 +1,12 @@
 package com.staboss.convolutional_codes;
 
 import com.staboss.convolutional_codes.coder.Coder;
-import com.staboss.convolutional_codes.coder.SystematicCoder;
-import com.staboss.convolutional_codes.coder.NonSystematicCoder;
 import com.staboss.convolutional_codes.decoder.Decoder;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import static com.staboss.convolutional_codes.coder.Coder.getCoder;
 import static com.staboss.convolutional_codes.util.Generator.*;
 import static com.staboss.convolutional_codes.util.Util.*;
 import static java.lang.Integer.parseInt;
@@ -119,21 +118,29 @@ public class Main {
      * @throws Exception если передан недопустимы формат
      */
     private static void setStateFormat(int gPow) throws Exception {
-        String format = (gPow == 2) ? "%2s" : (gPow == 3) ? "%3s" : (gPow == 4) ? "%4s" : (gPow == 5) ? "%5s" : (gPow == 6) ? "%6s" : null;
-        if (format == null) throw new Exception();
-        firstState = format(format, Integer.toBinaryString(0)).replaceAll(" ", "0");
-    }
+        String format;
+        switch (gPow) {
+            case 2:
+                format = "%2s";
+                break;
+            case 3:
+                format = "%3s";
+                break;
+            case 4:
+                format = "%4s";
+                break;
+            case 5:
+                format = "%5s";
+                break;
+            case 6:
+                format = "%6s";
+                break;
+            default:
+                format = null;
+                break;
+        }
 
-    /**
-     * Возвращает указанный кодер
-     *
-     * @param type тип кодера
-     * @param g1   полином 1
-     * @param g2   полином 2
-     * @return нужный кодер
-     * @throws Exception если ошибка входных данных
-     */
-    private static Coder getCoder(String type, String g1, String g2) throws Exception {
-        return type.equals("-s") ? new SystematicCoder(g1, g2) : new NonSystematicCoder(g1, g2);
+        if (format == null) throw new Exception("Invalid Initial State Format");
+        firstState = format(format, Integer.toBinaryString(0)).replaceAll(" ", "0");
     }
 }
