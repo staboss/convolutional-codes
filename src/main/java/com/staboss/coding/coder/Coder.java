@@ -1,6 +1,6 @@
-package com.staboss.convolutional_codes.coder;
+package com.staboss.coding.coder;
 
-import com.staboss.convolutional_codes.model.State;
+import com.staboss.coding.model.State;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

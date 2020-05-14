@@ -1,7 +1,7 @@
-package com.staboss.convolutional_codes;
+package com.staboss.coding;
 
-import com.staboss.convolutional_codes.coder.Coder;
-import com.staboss.convolutional_codes.coder.NonSystematicCoder;
+import com.staboss.coding.coder.Coder;
+import com.staboss.coding.coder.NonSystematicCoder;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

@@ -1,6 +1,6 @@
-package com.staboss.convolutional_codes.util;
+package com.staboss.coding.util;
 
-import com.staboss.convolutional_codes.model.Point;
+import com.staboss.coding.model.Point;
 
 import java.util.Comparator;
 

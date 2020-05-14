@@ -1,4 +1,4 @@
-package com.staboss.convolutional_codes.plot;
+package com.staboss.coding.plot;
 
 import java.io.FileWriter;
 

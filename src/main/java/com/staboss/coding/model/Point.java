@@ -1,4 +1,4 @@
-package com.staboss.convolutional_codes.model;
+package com.staboss.coding.model;
 
 /**
  * Точка на решетке

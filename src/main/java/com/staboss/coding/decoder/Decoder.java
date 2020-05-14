@@ -1,7 +1,7 @@
-package com.staboss.convolutional_codes.decoder;
+package com.staboss.coding.decoder;
 
-import com.staboss.convolutional_codes.model.Point;
-import com.staboss.convolutional_codes.model.State;
+import com.staboss.coding.model.Point;
+import com.staboss.coding.model.State;
 
 import java.util.*;
 
@@ -112,10 +112,11 @@ public class Decoder {
 
         //  собираем информационную последовательность
         for (int i = 0; i < decodedSequence.length; i++) {
-            if (i + 1 < decodedSequence.length)
+            if (i + 1 < decodedSequence.length) {
                 decodedSequence[i] = getBranchValue(pointSequence[i], pointSequence[i + 1]);
-            else
+            } else {
                 decodedSequence[i] = getBranchValue(pointSequence[i], pointSequence[0]);
+            }
         }
     }
 
@@ -247,10 +248,10 @@ public class Decoder {
      *
      * @param points множество точек
      * @param point  точка на решетке
-     * @param i      слой
+     * @param level  слой
      * @return точка на решетке
      */
-    private Point getNewPoint(Set<Point> points, Point point, int i) {
+    private Point getNewPoint(Set<Point> points, Point point, int level) {
         //  в каждую точку приходят две другие точки (состояния точек)
         State inState1 = states.get(states.get(point.getValue()).getInState1());
         State inState2 = states.get(states.get(point.getValue()).getInState2());
@@ -268,23 +269,18 @@ public class Decoder {
 
         //  определяем по 0 или 1 пришли точки
         if (Integer.parseInt(point.getValue(), 2) >= (states.size() / 2)) {
-            error1 = getErrors(vector[i - 1], inState1.getOutOne()) + errorsFromInState1;
-            error2 = getErrors(vector[i - 1], inState2.getOutOne()) + errorsFromInState2;
+            error1 = getErrors(vector[level - 1], inState1.getOutOne()) + errorsFromInState1;
+            error2 = getErrors(vector[level - 1], inState2.getOutOne()) + errorsFromInState2;
         } else {
-            error1 = getErrors(vector[i - 1], inState1.getOutZero()) + errorsFromInState1;
-            error2 = getErrors(vector[i - 1], inState2.getOutZero()) + errorsFromInState2;
+            error1 = getErrors(vector[level - 1], inState1.getOutZero()) + errorsFromInState1;
+            error2 = getErrors(vector[level - 1], inState2.getOutZero()) + errorsFromInState2;
         }
 
         //  итоговое количество ошибок, которое будет записано
         int finalError;
 
         //  полученная точка
-        Point newPoint = new Point(
-                point.getValue(),
-                i,
-                point.getBranch0(),
-                point.getBranch1()
-        );
+        Point newPoint = new Point(point.getValue(), level, point.getBranch0(), point.getBranch1());
 
         //  устанавляваем оптимальный пуль и количество ошибок для новой точки
         if (error1 < error2) {
@@ -313,21 +309,24 @@ public class Decoder {
      */
     private String getBranchValue(String from, String to) {
         State state = states.get(from);
-        if (state.getOutStateZero().equals(to)) return state.getOutZero();
-        else return state.getOutOne();
+        if (state.getOutStateZero().equals(to)) {
+            return state.getOutZero();
+        } else {
+            return state.getOutOne();
+        }
     }
 
     /**
      * Возвращает количество ошибок от 0 до 2
      *
-     * @param s1 значение вектора
-     * @param s2 значение ветки
+     * @param vector значение вектора
+     * @param branch значение ветки
      * @return количество ошибок
      */
-    private int getErrors(String s1, String s2) {
+    private int getErrors(String vector, String branch) {
         int count = 0;
-        if (s1.charAt(0) != s2.charAt(0)) count++;
-        if (s1.charAt(1) != s2.charAt(1)) count++;
+        if (vector.charAt(0) != branch.charAt(0)) count++;
+        if (vector.charAt(1) != branch.charAt(1)) count++;
         return count;
     }
 
@@ -340,7 +339,10 @@ public class Decoder {
      */
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     private Point getInPoint(Set<Point> points, State inState) {
-        return points.stream().filter(p -> Objects.equals(p.getValue(), inState.getState())).findFirst().get();
+        return points.stream()
+                .filter(p -> Objects.equals(p.getValue(), inState.getState()))
+                .findFirst()
+                .get();
     }
 
     /**
@@ -362,8 +364,7 @@ public class Decoder {
         else
             return new Point(
                     branch, errors, level,
-                    state.getOutStateZero(), state.getOutStateOne(), state.getOutZero(), state.getOutOne(),
-                    point
+                    state.getOutStateZero(), state.getOutStateOne(), state.getOutZero(), state.getOutOne(), point
             );
     }
 }

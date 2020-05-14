@@ -1,9 +1,9 @@
-package com.staboss.convolutional_codes.plot;
+package com.staboss.coding.plot;
 
-import com.staboss.convolutional_codes.coder.Coder;
-import com.staboss.convolutional_codes.coder.NonSystematicCoder;
-import com.staboss.convolutional_codes.decoder.Decoder;
-import com.staboss.convolutional_codes.model.State;
+import com.staboss.coding.coder.Coder;
+import com.staboss.coding.coder.NonSystematicCoder;
+import com.staboss.coding.decoder.Decoder;
+import com.staboss.coding.model.State;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.XYChart;
@@ -14,8 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static com.staboss.convolutional_codes.util.Generator.*;
-import static com.staboss.convolutional_codes.util.Util.getVectorValues;
+import static com.staboss.coding.util.Generator.*;
+import static com.staboss.coding.util.Util.getVectorValues;
 import static java.lang.System.out;
 
 public class DependencyGraph {
@@ -132,12 +132,12 @@ public class DependencyGraph {
         private static int id = 0;
         private int workerId;
 
-        private Map<String, com.staboss.convolutional_codes.model.State> states;
+        private Map<String, com.staboss.coding.model.State> states;
         private String firstState;
 
         private int[] positions;
 
-        Worker(Map<String, com.staboss.convolutional_codes.model.State> states, String firstState, int... positions) {
+        Worker(Map<String, com.staboss.coding.model.State> states, String firstState, int... positions) {
             this.states = states;
             this.firstState = firstState;
             this.positions = positions;

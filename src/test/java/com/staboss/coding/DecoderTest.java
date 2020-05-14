@@ -1,7 +1,7 @@
-package com.staboss.convolutional_codes;
+package com.staboss.coding;
 
-import com.staboss.convolutional_codes.decoder.Decoder;
-import com.staboss.convolutional_codes.model.State;
+import com.staboss.coding.decoder.Decoder;
+import com.staboss.coding.model.State;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

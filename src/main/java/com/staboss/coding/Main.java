@@ -1,14 +1,14 @@
-package com.staboss.convolutional_codes;
+package com.staboss.coding;
 
-import com.staboss.convolutional_codes.coder.Coder;
-import com.staboss.convolutional_codes.decoder.Decoder;
+import com.staboss.coding.coder.Coder;
+import com.staboss.coding.decoder.Decoder;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import static com.staboss.convolutional_codes.coder.Coder.getCoder;
-import static com.staboss.convolutional_codes.util.Generator.*;
-import static com.staboss.convolutional_codes.util.Util.*;
+import static com.staboss.coding.coder.Coder.getCoder;
+import static com.staboss.coding.util.Generator.*;
+import static com.staboss.coding.util.Util.*;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 
@@ -20,6 +20,10 @@ public class Main {
     private static String firstState;
 
     public static void main(String[] args) {
+        if (args.length == 0) {
+            usage(false);
+            return;
+        }
 
         if (args[0].equals("-h")) {
             usage(false);

@@ -1,17 +1,17 @@
-package com.staboss.convolutional_codes.coder;
+package com.staboss.coding.coder;
 
-import com.staboss.convolutional_codes.model.State;
+import com.staboss.coding.model.State;
 
 /**
- * Систематический кодер сверточного кода
+ * Несистематический кодер сверточного кода
  *
  * @author Boris Stasenko
  * @see State
  * @see Coder
  */
-public class SystematicCoder extends Coder {
+public class NonSystematicCoder extends Coder {
 
-    public SystematicCoder(String g1, String g2) throws Exception {
+    public NonSystematicCoder(String g1, String g2) throws Exception {
         super(g1, g2);
     }
 
@@ -22,26 +22,25 @@ public class SystematicCoder extends Coder {
         //  "101" -> {'1', '0', '1'}
         char[] bytes = state.getState().toCharArray();
 
-        int t = u;
+        int out1 = u;
+        int out2 = u;
 
         //  XOR по g1
         for (int i = 1; i < super.getG1().length; i++)
             if (super.getG1()[i] == '1')
-                t ^= Integer.parseInt(String.valueOf(bytes[i - 1]));
-
-        t ^= u;
+                out1 ^= Integer.parseInt(String.valueOf(bytes[i - 1]));
 
         //  XOR по g2
         for (int i = 1; i < super.getG2().length; i++)
             if (super.getG2()[i] == '1')
-                t ^= Integer.parseInt(String.valueOf(bytes[i - 1]));
+                out2 ^= Integer.parseInt(String.valueOf(bytes[i - 1]));
 
         //  устанавливаем состояния на выходе и значения C1 и C2 после XOR
         if (u == 0) {
-            state.setOutZero(u + String.valueOf(t));
+            state.setOutZero(out1 + String.valueOf(out2));
             state.setOutStateZero(u + state.getState().substring(0, state.getState().length() - 1));
         } else {
-            state.setOutOne(u + String.valueOf(t));
+            state.setOutOne(out1 + String.valueOf(out2));
             state.setOutStateOne(u + state.getState().substring(0, state.getState().length() - 1));
         }
 

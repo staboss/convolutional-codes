@@ -1,4 +1,4 @@
-package com.staboss.convolutional_codes.util;
+package com.staboss.coding.util;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -18,7 +18,9 @@ public class Generator {
      */
     public static int[] getVector(int k) {
         Random random = new Random();
-        return IntStream.range(0, k).map(i -> random.nextInt(2)).toArray();
+        return IntStream.range(0, k)
+                .map(i -> random.nextInt(2))
+                .toArray();
     }
 
     /**
@@ -29,7 +31,9 @@ public class Generator {
      */
     public static void invert(int[] vector, double p) {
         Random random = new Random();
-        IntStream.range(0, vector.length).filter(i -> random.nextDouble() < p).forEach(i -> vector[i] ^= 1);
+        IntStream.range(0, vector.length)
+                .filter(i -> random.nextDouble() < p)
+                .forEach(i -> vector[i] ^= 1);
     }
 
     /**
@@ -40,7 +44,8 @@ public class Generator {
      */
     public static int[] makeIntVector(String vector) {
         return IntStream.range(0, vector.length())
-                .map(i -> Integer.parseInt(String.valueOf(vector.charAt(i)))).toArray();
+                .map(i -> Integer.parseInt(String.valueOf(vector.charAt(i))))
+                .toArray();
     }
 
     /**
@@ -51,6 +56,7 @@ public class Generator {
      */
     public static String makeStringVector(int[] vector) {
         return Arrays.stream(vector)
-                .mapToObj(String::valueOf).collect(Collectors.joining());
+                .mapToObj(String::valueOf)
+                .collect(Collectors.joining());
     }
 }

@@ -1,4 +1,4 @@
-package com.staboss.convolutional_codes.util;
+package com.staboss.coding.util;
 
 import java.util.Arrays;
 
@@ -6,7 +6,7 @@ import static java.lang.System.out;
 
 public class Util {
 
-    private static final String delimiter = "-------------------------------------------------------------------";
+    private static final String delimiter = "---------------------------------------------------------------";
 
     /**
      * Помощь в использовании программы
@@ -22,7 +22,7 @@ public class Util {
         }
 
         println((char) 27 + "[01;31m" + delimiter +
-                "\nUsage : java -jar ConvolutionalCoding-1.0.jar [-u|-s] [-r|-g] G1 G2\n" + delimiter + "\n" +
+                "\nusage : java -jar convolutional-codes.jar [-u|-s] [-r|-g] G1 G2\n" + delimiter + "\n" +
                 "\t-u : unsystematic coding\n" +
                 "\t-s : systematic coding\n" +
                 "\t-g : generating sequence\n" +

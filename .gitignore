@@ -1,5 +1,6 @@
-# Default ignored files
-/.idea
-/target
+src/main/resources/*.csv
+src/main/resources/*.png
+.idea
+target
 *.iml
 .DS_Store
