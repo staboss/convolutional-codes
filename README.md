@@ -31,8 +31,11 @@ java -jar convolutional-codes.jar -u -g 1+x+x^4 1+x^2+x^3+x^4
 ## Frame error rate (FER) test
 ![BER test](https://github.com/staboss/convolutional-codes/blob/master/media/ERROR_RATE/ERROR_RATE_X_4/FER_4.png)
 
-## Bir error rate (BER) test
+## Bit error rate (BER) test
 ![BER test](https://github.com/staboss/convolutional-codes/blob/master/media/ERROR_RATE/ERROR_RATE_X_4/BER_4.png)
+
+## TODO
+- [ ] Translate all comments in the code into English
 
 ## License & copyright
 Licensed under the [MIT-License](LICENSE.md).
