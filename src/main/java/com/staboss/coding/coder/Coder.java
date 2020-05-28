@@ -1,6 +1,6 @@
 package com.staboss.coding.coder;
 
-import com.staboss.coding.model.State;
+import com.staboss.coding.model.CoderState;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -9,34 +9,34 @@ import java.util.Map;
  * Кодер сверточного кода
  *
  * @author Boris Stasenko
- * @see State
+ * @see CoderState
  */
 public abstract class Coder {
 
-    private Map<String, State> states;      //  последовательности переходов
+    private Map<String, CoderState> states;      //  последовательности переходов
 
-    private String format;                  //  формат хранимых состояний
+    private String format;                       //  формат хранимых состояний
 
-    private char[] g1;                      //  полином 1
-    private char[] g2;                      //  полином 2
+    private char[] polynomial1;                  //  полином 1
+    private char[] polynomial2;                  //  полином 2
 
-    private int maxPow;                     //  максимальная степень полинома
-    private int stateCount;                 //  количество состояний
+    private int maxPow;                          //  максимальная степень полинома
+    private int stateCount;                      //  количество состояний
 
-    Coder(String g1, String g2) throws Exception {
+    Coder(String polynomial1, String polynomial2) throws Exception {
         this.states = new LinkedHashMap<>();
 
-        this.g1 = g1.toCharArray();
-        this.g2 = g2.toCharArray();
+        this.polynomial1 = polynomial1.toCharArray();
+        this.polynomial2 = polynomial2.toCharArray();
 
-        this.maxPow = Math.max(g1.length() - 1, g2.length() - 1);
+        this.maxPow = Math.max(polynomial1.length() - 1, polynomial2.length() - 1);
         this.stateCount = (int) Math.pow(2, maxPow);
 
         setStates(stateCount);
         setOuts();
     }
 
-    public Map<String, State> getStates() {
+    public Map<String, CoderState> getStates() {
         return states;
     }
 
@@ -48,12 +48,12 @@ public abstract class Coder {
         return stateCount;
     }
 
-    char[] getG1() {
-        return g1;
+    char[] getPolynomial1() {
+        return polynomial1;
     }
 
-    char[] getG2() {
-        return g2;
+    char[] getPolynomial2() {
+        return polynomial2;
     }
 
     /**
@@ -62,7 +62,7 @@ public abstract class Coder {
      * @param state состояние
      * @param u     входной бит 0 или 1
      */
-    protected abstract void code(State state, int u) throws Exception;
+    protected abstract void code(CoderState state, int u) throws Exception;
 
     /**
      * Составляет последовательность переходов
@@ -72,12 +72,32 @@ public abstract class Coder {
      */
     private void setStates(int stateCount) throws Exception {
         //  доступные форматы : '00', '000', '0000', '00000', '000000'
-        format = (stateCount == 4) ? "%2s" : (stateCount == 8) ? "%3s" : (stateCount == 16) ? "%4s" : (stateCount == 32) ? "%5s" : (stateCount == 64) ? "%6s" : null;
+        switch (stateCount) {
+            case 4:
+                format = "%2s";
+                break;
+            case 8:
+                format = "%3s";
+                break;
+            case 16:
+                format = "%4s";
+                break;
+            case 32:
+                format = "%5s";
+                break;
+            case 64:
+                format = "%6s";
+                break;
+            default:
+                format = null;
+                break;
+        }
+
         if (format == null) throw new Exception("Invalid Number of States");
 
         for (int i = 0; i < stateCount; i++) {
             String value = String.format(format, Integer.toBinaryString(i)).replaceAll(" ", "0");
-            states.put(value, new State(value));
+            states.put(value, new CoderState(value));
         }
     }
 
@@ -98,21 +118,21 @@ public abstract class Coder {
     /**
      * Кодирует входную информационную последовательность
      *
-     * @param u информационная последовательность
+     * @param bits информационная последовательность
      * @return статистически зависимая информационная последовательность
      */
-    public String encode(String u) {
+    public String encode(String bits) {
         //  результат кодера
         StringBuilder sb = new StringBuilder();
 
         //  запоминаем значение нулевого состояния
-        String firstState = String.format(format, Integer.toBinaryString(0)).replaceAll(" ", "0");
+        String initialState = String.format(format, Integer.toBinaryString(0)).replaceAll(" ", "0");
 
         //  текущее состояние перехода
-        State currentState = states.get(firstState);
+        CoderState currentState = states.get(initialState);
 
         //  "101" -> {'1', '0', '1'}
-        char[] seq = u.toCharArray();
+        char[] seq = bits.toCharArray();
 
         for (char s : seq) {
             if (s == '0') {
@@ -125,12 +145,47 @@ public abstract class Coder {
         }
 
         //  переводим регистр сдвига в нулевое состояние
-        for (int i = 0; i < firstState.length(); i++) {
+        for (int i = 0; i < initialState.length(); i++) {
             sb.append(currentState.getOutZero());
             currentState = states.get(currentState.getOutStateZero());
         }
 
         return sb.toString();
+    }
+
+    /**
+     * Декодирует входную информационную последовательность
+     *
+     * @param bits информационная последовательность
+     * @return декодированная последовательность
+     */
+    public String decode(String bits) {
+        //  результат декодирование
+        StringBuilder sb = new StringBuilder();
+
+        //  запоминаем значение нулевого состояния
+        String initialState = String.format(format, Integer.toBinaryString(0)).replaceAll(" ", "0");
+
+        //  текущее состояние перехода
+        CoderState currentState = states.get(initialState);
+
+        //  "101" -> {'1', '0', '1'}
+        char[] seq = bits.toCharArray();
+
+        String value;
+        for (int i = 0; i < seq.length - 1; i += 2) {
+            value = String.valueOf(seq[i]) + seq[i + 1];
+            if (value.equals(currentState.getOutZero())) {
+                sb.append('0');
+                currentState = states.get(currentState.getOutStateZero());
+            } else if (value.equals(currentState.getOutOne())) {
+                sb.append('1');
+                currentState = states.get(currentState.getOutStateOne());
+            }
+        }
+
+        String result = sb.toString();
+        return result.substring(0, result.length() - initialState.length());
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.staboss.coding.decoder;
 
-import com.staboss.coding.model.Point;
-import com.staboss.coding.model.State;
+import com.staboss.coding.model.GridPoint;
+import com.staboss.coding.model.CoderState;
 
 import java.util.*;
 
@@ -9,26 +9,26 @@ import java.util.*;
  * Декодер сверточного кода по алгоритму Витерби
  *
  * @author Boris Stasenko
- * @see State
- * @see Point
+ * @see CoderState
+ * @see GridPoint
  */
-public class Decoder {
+public final class Decoder {
 
-    private Map<Integer, Set<Point>> layers;        //  слои решетки
-    private Map<String, State> states;              //  состояния
+    private Map<Integer, Set<GridPoint>> layers;        //  слои решетки
+    private Map<String, CoderState> states;             //  состояния
 
-    private String firstState;                      //  начальное состояние первой точки решетки
-    private String[] vector;                        //  информационная последовательность
-    private String format;                          //  формат хранимых состояний
+    private String firstState;                          //  начальное состояние первой точки решетки
+    private String[] vector;                            //  информационная последовательность
+    private String format;                              //  формат хранимых состояний
 
-    private Point lastPoint;                        //  последняя точка решетки
+    private GridPoint lastPoint;                        //  последняя точка решетки
 
-    private String[] pointSequence;                 //  полученный путь из точек
-    private String[] decodedSequence;               //  полученная последовательность
+    private String[] pointSequence;                     //  полученный путь из точек
+    private String[] decodedSequence;                   //  полученная последовательность
 
-    private int errors;                             //  количество ошибок в последовательности
+    private int errors;                                 //  количество ошибок в последовательности
 
-    public Decoder(Map<String, State> states, String firstState, String[] vector) throws Exception {
+    public Decoder(Map<String, CoderState> states, String firstState, String[] vector) throws Exception {
         this.layers = new LinkedHashMap<>();
         this.states = states;
 
@@ -67,7 +67,7 @@ public class Decoder {
         findMinWay();
     }
 
-    public Map<Integer, Set<Point>> getLayers() {
+    public Map<Integer, Set<GridPoint>> getLayers() {
         return layers;
     }
 
@@ -99,7 +99,7 @@ public class Decoder {
         pointSequence = new String[vector.length];
 
         //  последняя точка решетки
-        Point currentPoint = lastPoint.getPathFromPoint();
+        GridPoint currentPoint = lastPoint.getPathFromPoint();
 
         //  в последней точке записано количество ошибок
         errors = lastPoint.getErrors();
@@ -126,24 +126,24 @@ public class Decoder {
     private void createGrid() {
 
         //  количество слоев -> (длина вектора / 2) + 1
-        int l = vector.length + 1;
+        int layersNumber = vector.length + 1;
         int k = firstState.length();
 
         //  текущий слой решеткки
-        Set<Point> currentLayer = new LinkedHashSet<>();
+        Set<GridPoint> currentLayer = new LinkedHashSet<>();
 
         //  будущий слой решетки
-        Set<Point> nextLayer;
+        Set<GridPoint> nextLayer;
 
         //  множетсво для переходе в точку из двух точек
-        Set<Point> points;
+        Set<GridPoint> points;
 
         //  выжившие состояния на решетке
         List<String> survivedStates;
 
         //  начальная точка на решетке
-        State initialState = states.get(firstState);
-        Point initialPoint = getOutPoint(firstState, 0, 0, initialState, null);
+        CoderState initialState = states.get(firstState);
+        GridPoint initialPoint = getOutPoint(firstState, 0, 0, initialState, null);
 
         //  начальный слой в решетке
         currentLayer.add(initialPoint);
@@ -152,56 +152,56 @@ public class Decoder {
         layers.put(0, currentLayer);
 
         //  количество выживших точек на последних слоях
-        int c = (int) Math.pow(2, k) / 2;
+        int survivedPointsNumber = (int) Math.pow(2, k) / 2;
 
         //  цикл по каждому слою
-        for (int i = 1; i < l; i++) {
+        for (int level = 1; level < layersNumber; level++) {
 
             //  инициализация будущего слоя
             nextLayer = new LinkedHashSet<>();
 
             //  заполняем слой в зависимости от номера слоя
-            if (i >= (l - k)) {
+            if (level >= (layersNumber - k)) {
 
                 survivedStates = new ArrayList<>();
 
                 //  проход по выжившим точкам
-                for (int j = 0; j < c; j++) {
+                for (int i = 0; i < survivedPointsNumber; i++) {
                     survivedStates.add(
-                            String.format(format, Integer.toBinaryString(j)).replaceAll(" ", "0")
+                            String.format(format, Integer.toBinaryString(i))
+                                    .replaceAll(" ", "0")
                     );
                 }
 
                 //  получаем предыдущий слой и делаем его текущим
-                points = new HashSet<>(layers.get(i - 1));
+                points = new HashSet<>(layers.get(level - 1));
 
                 //  точки из предыдущего слоя совпадают с текущим слоем
-                for (Point point : points) {
+                for (GridPoint point : points) {
 
                     if (!survivedStates.contains(point.getValue())) continue;
 
                     //  получаем точку, в которую пришли две точки из предыдущего слоя
-                    Point newPoint = getNewPoint(points, point, i);
+                    GridPoint newPoint = getNewPoint(points, point, level);
 
-                    if (c == 1) lastPoint = newPoint;
+                    if (survivedPointsNumber == 1) lastPoint = newPoint;
 
                     //  добавляем точку в следующий слой
                     nextLayer.add(newPoint);
                 }
 
                 //  уменьшаем количество выживших точек в 2 раза
-                c /= 2;
+                survivedPointsNumber /= 2;
 
-            } else if (i < (l - k) && i > k) {
-
+            } else if (level < (layersNumber - k) && level > k) {
                 //  получаем предыдущий слой и делаем его текущим
-                points = new HashSet<>(layers.get(i - 1));
+                points = new HashSet<>(layers.get(level - 1));
 
                 //  точки из предыдущего слоя совпадают с текущим слоем
-                for (Point point : points) {
+                for (GridPoint point : points) {
 
                     //  получаем точку, в которую пришли две точки из предыдущего слоя
-                    Point newPoint = getNewPoint(points, point, i);
+                    GridPoint newPoint = getNewPoint(points, point, level);
 
                     //  добавляем точку в следующий слой
                     nextLayer.add(newPoint);
@@ -211,24 +211,23 @@ public class Decoder {
                 currentLayer = new LinkedHashSet<>(nextLayer);
 
             } else {
-
                 //  для каждой точки из текущего слоя
-                for (Point point : currentLayer) {
+                for (GridPoint point : currentLayer) {
 
                     //  получаем ветки, по которым точка выходит
-                    String branch0 = point.getBranch0();
-                    String branch1 = point.getBranch1();
+                    String branch0 = point.getBranchPath0();
+                    String branch1 = point.getBranchPath1();
 
                     //  получаем количество ошибок в текущей точке
                     int errors = point.getErrors();
 
                     //  получаем количество ошибок на в новых точках
-                    int error0 = getErrors(vector[i - 1], point.getBranchValue0()) + errors;
-                    int error1 = getErrors(vector[i - 1], point.getBranchValue1()) + errors;
+                    int error0 = getErrors(vector[level - 1], point.getBranchValue0()) + errors;
+                    int error1 = getErrors(vector[level - 1], point.getBranchValue1()) + errors;
 
                     //  добавляем точки в следующий слой
-                    Point point0 = getOutPoint(branch0, error0, i, states.get(branch0), point);
-                    Point point1 = getOutPoint(branch1, error1, i, states.get(branch1), point);
+                    GridPoint point0 = getOutPoint(branch0, error0, level, states.get(branch0), point);
+                    GridPoint point1 = getOutPoint(branch1, error1, level, states.get(branch1), point);
 
                     nextLayer.add(point0);
                     nextLayer.add(point1);
@@ -239,7 +238,7 @@ public class Decoder {
             }
 
             //  добавляем уровень и слой в множество слоев
-            layers.put(i, nextLayer);
+            layers.put(level, nextLayer);
         }
     }
 
@@ -251,14 +250,14 @@ public class Decoder {
      * @param level  слой
      * @return точка на решетке
      */
-    private Point getNewPoint(Set<Point> points, Point point, int level) {
+    private GridPoint getNewPoint(Set<GridPoint> points, GridPoint point, int level) {
         //  в каждую точку приходят две другие точки (состояния точек)
-        State inState1 = states.get(states.get(point.getValue()).getInState1());
-        State inState2 = states.get(states.get(point.getValue()).getInState2());
+        CoderState inState1 = states.get(states.get(point.getValue()).getInStateZero());
+        CoderState inState2 = states.get(states.get(point.getValue()).getInStateOne());
 
         //  пришедшие точки
-        Point inPoint1 = getInPoint(points, inState1);
-        Point inPoint2 = getInPoint(points, inState2);
+        GridPoint inPoint1 = getInPoint(points, inState1);
+        GridPoint inPoint2 = getInPoint(points, inState2);
 
         //  количество ошибок в точках
         int errorsFromInState1 = inPoint1.getErrors();
@@ -280,7 +279,12 @@ public class Decoder {
         int finalError;
 
         //  полученная точка
-        Point newPoint = new Point(point.getValue(), level, point.getBranch0(), point.getBranch1());
+        GridPoint newPoint = GridPoint.builder()
+                .value(point.getValue())
+                .level(level)
+                .branchPath0(point.getBranchPath0())
+                .branchPath1(point.getBranchPath1())
+                .build();
 
         //  устанавляваем оптимальный пуль и количество ошибок для новой точки
         if (error1 < error2) {
@@ -303,13 +307,13 @@ public class Decoder {
     /**
      * Возвращает значение на ветке перехода
      *
-     * @param from точка выхода
-     * @param to   точка входа
+     * @param fromPoint точка выхода
+     * @param toPoint   точка входа
      * @return значение ветки
      */
-    private String getBranchValue(String from, String to) {
-        State state = states.get(from);
-        if (state.getOutStateZero().equals(to)) {
+    private String getBranchValue(String fromPoint, String toPoint) {
+        CoderState state = states.get(fromPoint);
+        if (state.getOutStateZero().equals(toPoint)) {
             return state.getOutZero();
         } else {
             return state.getOutOne();
@@ -319,14 +323,14 @@ public class Decoder {
     /**
      * Возвращает количество ошибок от 0 до 2
      *
-     * @param vector значение вектора
-     * @param branch значение ветки
+     * @param vector      значение вектора
+     * @param branchValue значение ветки
      * @return количество ошибок
      */
-    private int getErrors(String vector, String branch) {
+    private int getErrors(String vector, String branchValue) {
         int count = 0;
-        if (vector.charAt(0) != branch.charAt(0)) count++;
-        if (vector.charAt(1) != branch.charAt(1)) count++;
+        if (vector.charAt(0) != branchValue.charAt(0)) count++;
+        if (vector.charAt(1) != branchValue.charAt(1)) count++;
         return count;
     }
 
@@ -338,7 +342,7 @@ public class Decoder {
      * @return новая входящая точка
      */
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    private Point getInPoint(Set<Point> points, State inState) {
+    private GridPoint getInPoint(Set<GridPoint> points, CoderState inState) {
         return points.stream()
                 .filter(p -> Objects.equals(p.getValue(), inState.getState()))
                 .findFirst()
@@ -348,23 +352,27 @@ public class Decoder {
     /**
      * Создает новую выходящую точку
      *
-     * @param branch значение точки
-     * @param errors количество ошибок
-     * @param level  уровень слоя
-     * @param state  состояние
-     * @param point  родительская точка
+     * @param branchValue значение точки
+     * @param errors      количество ошибок
+     * @param level       уровень слоя
+     * @param state       состояние
+     * @param point       родительская точка
      * @return новая выходящая точка
      */
-    private Point getOutPoint(String branch, int errors, int level, State state, Point point) {
-        if (point == null)
-            return new Point(
-                    branch, errors, level,
-                    state.getOutStateZero(), state.getOutStateOne(), state.getOutZero(), state.getOutOne()
-            );
-        else
-            return new Point(
-                    branch, errors, level,
-                    state.getOutStateZero(), state.getOutStateOne(), state.getOutZero(), state.getOutOne(), point
-            );
+    private GridPoint getOutPoint(String branchValue, int errors, int level, CoderState state, GridPoint point) {
+        GridPoint.GridPointBuilder builder = GridPoint.builder()
+                .value(branchValue)
+                .errors(errors)
+                .level(level)
+                .branchPath0(state.getOutStateZero())
+                .branchPath1(state.getOutStateOne())
+                .branchValue0(state.getOutZero())
+                .branchValue1(state.getOutOne());
+
+        if (point != null) {
+            builder = builder.pathFromPoint(point);
+        }
+
+        return builder.build();
     }
 }

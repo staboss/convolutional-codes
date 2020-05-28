@@ -3,7 +3,7 @@ package com.staboss.coding.plot;
 import com.staboss.coding.coder.Coder;
 import com.staboss.coding.coder.NonSystematicCoder;
 import com.staboss.coding.decoder.Decoder;
-import com.staboss.coding.model.State;
+import com.staboss.coding.model.CoderState;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.XYChart;
@@ -20,7 +20,7 @@ import static java.lang.System.out;
 
 public class DependencyGraph {
 
-    private static volatile Map<String, State> states;
+    private static volatile Map<String, CoderState> states;
     private static volatile String firstState;
 
     private static Coder coder;
@@ -132,12 +132,12 @@ public class DependencyGraph {
         private static int id = 0;
         private int workerId;
 
-        private Map<String, com.staboss.coding.model.State> states;
+        private Map<String, CoderState> states;
         private String firstState;
 
         private int[] positions;
 
-        Worker(Map<String, com.staboss.coding.model.State> states, String firstState, int... positions) {
+        Worker(Map<String, CoderState> states, String firstState, int... positions) {
             this.states = states;
             this.firstState = firstState;
             this.positions = positions;
